@@ -9,8 +9,9 @@ namespace Sat.Recruitment.Domain.Repositories
 {
     public interface IUsersRepository
     {
-        void CreateUser(User newUser);
-        IEnumerable<User> GetUsers();
+        Task AddUser(User newUser);
+        Task<IEnumerable<User>> GetUsers();
+        
 
     }
 }

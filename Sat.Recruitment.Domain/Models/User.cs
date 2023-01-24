@@ -1,4 +1,6 @@
-﻿namespace Sat.Recruitment.Domain.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Sat.Recruitment.Domain.Models
 {
     public class User
     {
@@ -8,5 +10,20 @@
         public string Phone { get; set; }
         public string UserType { get; set; }
         public decimal Money { get; set; }
+
+
+        public override bool Equals(object objToCompare)
+        {
+            if (objToCompare is null)
+            {
+                return false;
+            }
+            if (objToCompare is not User)
+            {
+                return false;
+            }
+            User objAsUser = (User)objToCompare;
+            return Email == objAsUser.Email || Phone == objAsUser.Phone || (Name == objAsUser.Name && Address == objAsUser.Address);
+        }
     }
 }
