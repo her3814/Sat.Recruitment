@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sat.Recruitment.Domain.Models
+﻿namespace Sat.Recruitment.Domain.Models
 {
     public static class NewUserGiftPercentages
     {

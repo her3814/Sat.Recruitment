@@ -1,6 +1,5 @@
 ﻿using Sat.Recruitment.Domain.Models;
 using Sat.Recruitment.Domain.Repositories;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Sat.Recruitment.FileRepository
 {
