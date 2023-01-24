@@ -45,7 +45,7 @@ namespace Sat.Recruitment.Test.Fixtures
             }
         }
 
-        [CollectionDefinition("FileRepository Collection")]
+        [CollectionDefinition("FileRepository Collection", DisableParallelization = true)]
         public class FileRepositoryCollection : ICollectionFixture<InjectionWithFileRepositoryFixture>
         {
             // This class has no code, and is never created. Its purpose is simply
