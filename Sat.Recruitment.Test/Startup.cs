@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Sat.Recruitment.Test.Configuration;
 using Serilog;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Sat.Recruitment.Test
 {
@@ -33,6 +34,8 @@ namespace Sat.Recruitment.Test
                 .CreateLogger();
 
             services.AddLogging(c => c.ClearProviders().AddConsole().AddSerilog(log));
+            services.AddSingleton(Log.Logger);
+
             services.RegisterApplicationServices();
             services.RegisterRepositories();
         }

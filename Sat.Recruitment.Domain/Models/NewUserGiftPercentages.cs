@@ -12,17 +12,17 @@
         {
             switch (user.UserType)
             {
-                case "Normal":
+                case UserTypeEnum.Normal:
                     if (user.Money > 100)
                         return NormalOver100;
                     else if (user.Money > 10)
                         return NormalOver10;
                     break;
-                case "SuperUser":
+                case UserTypeEnum.SuperUser:
                     if (user.Money > 100)
                         return SuperUser;
                     break;
-                case "PremiumUser":
+                case UserTypeEnum.Premium:
                     if (user.Money > 100)
                         return PremiumUser;
                     break;

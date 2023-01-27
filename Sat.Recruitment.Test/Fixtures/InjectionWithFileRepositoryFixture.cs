@@ -4,6 +4,7 @@ using Sat.Recruitment.Api.Controllers;
 using Sat.Recruitment.Application.services;
 using Sat.Recruitment.Domain.Repositories;
 using Sat.Recruitment.Test.Helpers;
+using Serilog;
 using System;
 using System.Net.Http;
 using Xunit;
@@ -19,6 +20,7 @@ namespace Sat.Recruitment.Test.Fixtures
         public UserService usersService;
         public UsersController usersController;
         public IUsersRepository usersRepository;
+        public ILogger logger;
         public InjectionWithFileRepositoryFixture()
         {
             TestFileHelper.ResetTestFile();
@@ -28,6 +30,7 @@ namespace Sat.Recruitment.Test.Fixtures
             usersRepository = (IUsersRepository)ServiceProvider.GetService(typeof(IUsersRepository));
             usersService = (UserService)ServiceProvider.GetService(typeof(UserService));
             usersController = new UsersController(usersService);
+            logger = (ILogger)ServiceProvider.GetService(typeof(ILogger));
 
         }
 
@@ -42,6 +45,7 @@ namespace Sat.Recruitment.Test.Fixtures
             {
                 server.Dispose();
                 client.Dispose();
+
             }
         }
 

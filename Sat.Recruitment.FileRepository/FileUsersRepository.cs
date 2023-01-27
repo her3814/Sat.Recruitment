@@ -6,7 +6,7 @@ namespace Sat.Recruitment.FileRepository
     public class FileUsersRepository : IUsersRepository
     {
         private readonly string usersFilePath;
-        private readonly char columnSeparator = ',';
+        private readonly char columnSeparator = ';';
         public FileUsersRepository()
         {
             usersFilePath = Directory.GetCurrentDirectory() + "/Files/Users.txt";
@@ -14,12 +14,11 @@ namespace Sat.Recruitment.FileRepository
         public async Task AddUser(User newUser)
         {
             var userAsText = string.Join(columnSeparator, newUser.Name, newUser.Email, newUser.Phone, newUser.Address, newUser.UserType, newUser.Money);
-            var lastLine = (await File.ReadAllLinesAsync(usersFilePath)).LastOrDefault();
+            List<string> users = (await File.ReadAllLinesAsync(usersFilePath)).ToList();
+            users= users.Append(userAsText).ToList();
 
-            await File.AppendAllTextAsync(usersFilePath, string.Format("{0}{1}{2}", 
-                    string.IsNullOrWhiteSpace(lastLine) ? string.Empty : Environment.NewLine,
-                    userAsText, 
-                    Environment.NewLine));
+            //await File.WriteAllLinesAsync(usersFilePath, users);
+            await File.WriteAllTextAsync(usersFilePath, string.Join(Environment.NewLine, users));
             return;
         }
 
@@ -38,7 +37,7 @@ namespace Sat.Recruitment.FileRepository
                     Email = splittedLine[1].ToString(),
                     Phone = splittedLine[2].ToString(),
                     Address = splittedLine[3].ToString(),
-                    UserType = splittedLine[4].ToString(),
+                    UserType = Enum.Parse<UserTypeEnum>(splittedLine[4].ToString()),
                     Money = decimal.Parse(splittedLine[5].ToString()),
                 };
                 usersList.Add(user);

@@ -1,9 +1,11 @@
-﻿namespace Sat.Recruitment.Application
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Sat.Recruitment.Application
 {
     public class AppResult<T> : AppResult
     {
         public T Data { get; set; }
-        public AppResult() : base() { }
+        public AppResult() : base() { }        
         public AppResult(T obj) : this()
         {
             Data = obj;
@@ -19,7 +21,7 @@
             Errors = new List<AppError>();
         }
 
-        public string ErrorsText { get { return string.Join(", ", Errors.Select(p => p.Message)); } }
+        public string ErrorsText { get { return string.Join(". ", Errors.Select(p => p.Message)); } }
 
         private void AddError(string message, AppError.ErrorTypeEnum type)
         {
@@ -39,6 +41,14 @@
         public void AddInternalError(string message)
         {
             AddError(message, AppError.ErrorTypeEnum.InternalError);
+        }
+
+        internal void AddInputDataErrors(IEnumerable<ValidationResult> validationResults)
+        {
+            foreach (var dataError in validationResults)
+            {
+                AddInputDataError(dataError.ErrorMessage);
+            }
         }
     }
 

@@ -1,8 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Sat.Recruitment.Domain.Models;
 using Sat.Recruitment.Domain.Repositories;
 using Sat.Recruitment.Helpers;
+using System.ComponentModel.DataAnnotations;
+using Serilog;
 
 namespace Sat.Recruitment.Application.services
 {
@@ -11,8 +12,8 @@ namespace Sat.Recruitment.Application.services
 
 
         private readonly IUsersRepository _usersRepository;
-        private readonly ILogger<UserService> _logger;
-        public UserService(ILogger<UserService> logger, IUsersRepository usersRepository)
+        private readonly ILogger _logger;
+        public UserService(ILogger logger, IUsersRepository usersRepository)
         {
             _logger = logger;
             _usersRepository = usersRepository;
@@ -24,9 +25,11 @@ namespace Sat.Recruitment.Application.services
             var result = new AppResult();
 
             //Validate user info
-            ValidateErrors(newUser, result);
-            if (!result.IsSuccess)
+            var validationResults = newUser.Validate();
+
+            if (validationResults.Any())
             {
+                result.AddInputDataErrors(validationResults);
                 return result;
             }
 
@@ -37,9 +40,9 @@ namespace Sat.Recruitment.Application.services
 
             if (users.Any(user => user.Equals(newUser)))
             {
-                _logger.LogWarning("WARN: Creating new user");
-                _logger.LogWarning("User is duplicated");
-                _logger.LogWarning(JsonConvert.SerializeObject(newUser));
+                _logger.Warning("WARN: Creating new user");
+                _logger.Warning("User is duplicated");
+                _logger.Warning(JsonConvert.SerializeObject(newUser));
 
                 result.AddBusinessError("User is duplicated");
                 return result;
@@ -69,32 +72,13 @@ namespace Sat.Recruitment.Application.services
             catch (Exception ex)
             {
                 result.AddInternalError(ex.Message);
-                _logger.LogError("ERROR Listing All Users");
-                _logger.LogError(ex, ex.ToString());
+                _logger.Error("ERROR Listing All Users");
+                _logger.Error(ex, ex.ToString());
             }
 
             return result;
         }
 
 
-        //Validate errors
-        private void ValidateErrors(User userToValidate, AppResult result)
-        {
-            if (string.IsNullOrEmpty(userToValidate.Name))
-                //Validate if Name is null
-                result.AddInputDataError("The name is required");
-            if (string.IsNullOrEmpty(userToValidate.Email))
-                //Validate if Email is null
-                result.AddInputDataError("The email is required");
-            else if (!userToValidate.Email.IsValidEmail())
-                //Validate if Email is valid
-                result.AddInputDataError("The email is invalid");
-            if (string.IsNullOrEmpty(userToValidate.Address))
-                //Validate if Address is null
-                result.AddInputDataError("The address is required");
-            if (string.IsNullOrEmpty(userToValidate.Phone))
-                //Validate if Phone is null
-                result.AddInputDataError("The phone is required");
-        }
     }
 }
